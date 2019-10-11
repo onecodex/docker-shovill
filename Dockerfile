@@ -1,4 +1,4 @@
-FROM quay.io/aptible/ubuntu:16.04
+FROM quay.io/aptible/ubuntu:18.04
 
 MAINTAINER Christopher Smith <christopher@onecodex.com>
 
@@ -12,6 +12,8 @@ RUN apt-get update \
   locales \
   make \
   uuid-runtime \
+  sudo \
+  pigz \
   && apt-get clean
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8 \
@@ -19,20 +21,10 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8 \
   && echo 'shovill ALL=(ALL) NOPASSWD:ALL' >>/etc/sudoers
 
 USER shovill
-
 WORKDIR /home/shovill
 
-RUN git clone https://github.com/Linuxbrew/brew.git .linuxbrew
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)"
 
-ENV PATH=/home/shovill/.linuxbrew/bin:/home/shovill/.linuxbrew/sbin:$PATH \
-  SHELL=/bin/bash
-
-# RUN brew install cpanm
-
-# RUN cpanm Bio::Perl File::Slurp
-
-# ENV PERL5LIB /home/snippy/perl5/lib/perl5
-
-RUN brew install brewsci/bio/shovill
-
-CMD ["shovill", "--check"]
+ENV PATH=/home/linuxbrew/.linuxbrew/bin/:$PATH
+RUN brew tap brewsci/bio
+RUN brew install shovill
