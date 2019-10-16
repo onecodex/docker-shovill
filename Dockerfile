@@ -6,7 +6,7 @@ RUN conda install \
   --yes \
   --channel conda-forge \
   --channel bioconda \
-  --channe defaults \
+  --channel defaults \
   shovill
 
 RUN shovill --check
